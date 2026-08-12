@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Final Grade Calculator — What Do I Need on My Final?</title>
+<meta name="description" content="Find out exactly what score you need on your final exam to hit your target grade. Free, instant, no signup.">
+<style>
+:root{
+  --bg:#fbf7f1; --bg-raised:#f4ecdf; --bg-sunken:#efe5d4;
+  --ink:#26201a; --ink-2:#5f574c; --ink-3:#948a7c;
+  --accent:#e0662a; --accent-hover:#c65319; --accent-soft:#fae4d6; --accent-ink:#fff8f3;
+  --good:#2e7d4f; --good-soft:#e2f0e8; --warn:#a4331f; --warn-soft:#f7e3de;
+  --hairline:rgba(38,32,26,.10);
+  --focus-ring:0 0 0 2px var(--bg),0 0 0 4px var(--accent);
+  --shadow-1:0 1px 2px rgba(38,32,26,.05),0 2px 8px rgba(38,32,26,.04);
+  --shadow-2:0 2px 4px rgba(38,32,26,.06),0 8px 24px rgba(38,32,26,.09);
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --ease-out:cubic-bezier(0.23,1,0.32,1); --ease-in-out:cubic-bezier(0.77,0,0.175,1);
+  --t-press:120ms; --t-small:180ms; --t-med:240ms;
+  --r-md:12px; --r-lg:18px; --r-full:999px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font:100%/1.6 var(--font);-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--ink);min-height:100vh}
+::selection{background:var(--accent-soft);color:var(--accent-hover)}
+.wrap{max-width:44rem;margin:0 auto;padding:0 1.25rem}
+
+header{padding:1rem 0}
+header .wrap{display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:700;font-size:.9375rem;color:var(--ink);text-decoration:none;display:flex;gap:.5rem;align-items:center}
+.logo span{width:9px;height:9px;border-radius:var(--r-full);background:var(--accent)}
+
+.hero{padding:2.5rem 0 2rem;text-align:left}
+h1{font-size:clamp(1.75rem,5vw,2.6rem);line-height:1.08;letter-spacing:-0.022em;font-weight:700;max-width:15em}
+.hero p{margin-top:.875rem;color:var(--ink-2);font-size:1.0625rem;max-width:38em}
+
+.seg{position:relative;display:flex;background:var(--bg-sunken);border-radius:var(--r-md);padding:3px;margin:2rem 0 1.25rem;user-select:none}
+.seg button{-webkit-tap-highlight-color:transparent;position:relative;z-index:1;flex:1;font:inherit;font-size:.875rem;font-weight:600;color:var(--ink-2);background:none;border:none;cursor:pointer;padding:.625rem .5rem;border-radius:9px;transition:color var(--t-small) var(--ease-out)}
+.seg button[aria-pressed="true"]{color:var(--ink)}
+.seg button:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.seg-thumb{position:absolute;top:3px;left:3px;height:calc(100% - 6px);z-index:0;background:var(--bg);border-radius:9px;box-shadow:var(--shadow-1);transition:transform var(--t-med) var(--ease-in-out),width var(--t-med) var(--ease-in-out)}
+
+.panel{background:var(--bg-raised);border-radius:var(--r-lg);padding:1.5rem;margin-bottom:1rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:34rem){.grid2{grid-template-columns:1fr}}
+.field label{display:block;font-size:.8125rem;font-weight:600;color:var(--ink-2);margin-bottom:.375rem}
+.input{font:inherit;font-size:1.0625rem;color:var(--ink);background:var(--bg);border:1px solid var(--hairline);border-radius:var(--r-md);padding:.75rem .875rem;width:100%;transition:border-color var(--t-small) var(--ease-out),box-shadow var(--t-small) var(--ease-out)}
+.input::placeholder{color:var(--ink-3)}
+.input:hover{border-color:rgba(38,32,26,.22)}
+.input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+
+.result{background:var(--bg);border-radius:var(--r-lg);padding:1.75rem;box-shadow:var(--shadow-2);text-align:center;margin-top:.25rem;opacity:0;transform:translateY(8px);transition:opacity var(--t-med) var(--ease-out),transform var(--t-med) var(--ease-out)}
+.result.show{opacity:1;transform:none}
+.result .big{font-size:3rem;font-weight:750;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums}
+.result .msg{margin-top:.625rem;font-size:.9375rem;color:var(--ink-2);max-width:30em;margin-left:auto;margin-right:auto}
+.result.good .big{color:var(--good)} .result.ok .big{color:var(--accent)} .result.hard .big{color:var(--warn)}
+
+.rows{display:flex;flex-direction:column;gap:.625rem}
+.row{display:grid;grid-template-columns:1fr 5.5rem 5.5rem 2.25rem;gap:.5rem;align-items:center}
+.row .input{padding:.625rem .75rem;font-size:.9375rem}
+.row-del{-webkit-tap-highlight-color:transparent;border:none;background:none;color:var(--ink-3);font-size:1.125rem;cursor:pointer;border-radius:8px;height:2.25rem;transition:color var(--t-small) var(--ease-out),background var(--t-small) var(--ease-out)}
+.row-del:hover{color:var(--warn);background:var(--warn-soft)}
+.row-head{display:grid;grid-template-columns:1fr 5.5rem 5.5rem 2.25rem;gap:.5rem;font-size:.75rem;font-weight:600;color:var(--ink-3);padding:0 .125rem}
+
+.btn{-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font:inherit;font-size:1rem;font-weight:600;padding:.75rem 1.5rem;border-radius:var(--r-md);border:none;cursor:pointer;text-decoration:none;transition:transform var(--t-press) var(--ease-out),background var(--t-small) var(--ease-out),box-shadow var(--t-small) var(--ease-out)}
+.btn:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);box-shadow:var(--shadow-1)}
+.btn-primary:hover{background:var(--accent-hover);box-shadow:var(--shadow-2)}
+.btn-ghost{background:transparent;color:var(--ink-2)}
+.btn-ghost:hover{background:var(--bg-raised);color:var(--ink)}
+.btn-small{font-size:.875rem;padding:.5rem 1rem}
+
+.upsell{margin:3rem 0;background:var(--ink);color:#f6f1e9;border-radius:var(--r-lg);padding:2rem;box-shadow:var(--shadow-2)}
+.upsell h2{font-size:1.375rem;letter-spacing:-0.015em;line-height:1.2}
+.upsell p{margin-top:.625rem;color:#c9c0b2;font-size:.9375rem;max-width:36em}
+.upsell .btn{margin-top:1.25rem;background:var(--accent);color:var(--accent-ink)}
+.upsell .btn:hover{background:var(--accent-hover)}
+.upsell .tiny{margin-top:.75rem;font-size:.75rem;color:#948a7c}
+
+footer{padding:2rem 0 3rem;color:var(--ink-3);font-size:.8125rem}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+footer a{color:var(--ink-2);text-decoration:none}
+footer a:hover{color:var(--ink)}
+
+.toast{position:fixed;bottom:1.5rem;left:50%;z-index:50;transform:translate(-50%,12px) scale(.97);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg);font-size:.8125rem;font-weight:550;padding:.75rem 1.5rem;border-radius:var(--r-full);box-shadow:var(--shadow-2);transition:transform var(--t-med) var(--ease-out),opacity var(--t-med) var(--ease-out)}
+.toast.show{transform:translate(-50%,0) scale(1);opacity:1}
+
+.mode{display:none}.mode.active{display:block}
+@media(prefers-reduced-motion:reduce){*{transition-duration:1ms!important}}
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <a class="logo" href="../"><span></span>Doruk's Lab</a>
+  <a class="btn btn-ghost btn-small" href="../student-kit/">Student Kit →</a>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>What do you need on the final?</h1>
+    <p>Type your grades, get your answer in one second. No signup, no ads, works on your phone.</p>
+  </section>
+
+  <div class="seg" id="seg" role="group" aria-label="Calculator mode">
+    <div class="seg-thumb" id="segThumb"></div>
+    <button aria-pressed="true" data-mode="final">Final exam goal</button>
+    <button aria-pressed="false" data-mode="avg">My current average</button>
+  </div>
+
+  <!-- Mode 1: final goal -->
+  <div class="mode active" id="mode-final">
+    <div class="panel">
+      <div class="grid2">
+        <div class="field"><label for="cur">Current grade (%)</label>
+          <input class="input" id="cur" type="number" inputmode="decimal" placeholder="e.g. 78" min="0" max="120"></div>
+        <div class="field"><label for="want">Grade you want (%)</label>
+          <input class="input" id="want" type="number" inputmode="decimal" placeholder="e.g. 85" min="0" max="120"></div>
+        <div class="field" style="grid-column:1/-1"><label for="weight">How much is the final worth? (%)</label>
+          <input class="input" id="weight" type="number" inputmode="decimal" placeholder="e.g. 40" min="1" max="100"></div>
+      </div>
+    </div>
+    <div class="result" id="res-final" role="status">
+      <div class="big" id="need">—</div>
+      <div class="msg" id="needMsg"></div>
+      <button class="btn btn-ghost btn-small" id="share" style="margin-top:1rem">Copy my result</button>
+    </div>
+  </div>
+
+  <!-- Mode 2: weighted average -->
+  <div class="mode" id="mode-avg">
+    <div class="panel">
+      <div class="row-head"><span>Assignment</span><span>Score %</span><span>Weight %</span><span></span></div>
+      <div class="rows" id="rows"></div>
+      <button class="btn btn-ghost btn-small" id="addRow" style="margin-top:.875rem">+ Add row</button>
+    </div>
+    <div class="result" id="res-avg" role="status">
+      <div class="big" id="avg">—</div>
+      <div class="msg" id="avgMsg"></div>
+    </div>
+  </div>
+
+  <section class="upsell">
+    <h2>Finals are won in the 3 weeks before them.</h2>
+    <p>This calculator tells you the score you need — the <strong>Student Survival Kit '26–'27</strong> gets you there: an exam countdown board, a weekly study planner, a grade tracker for every course, and 5 printable planners. One file, works offline, yours forever.</p>
+    <a class="btn" href="../student-kit/" id="kitLink">Show me the kit — $7.99</a>
+    <div class="tiny">Instant download · No subscription · 2026–27 academic year</div>
+  </section>
+</main>
+
+<footer><div class="wrap">
+  <span>Made by <a href="../">Doruk's Lab</a> — small tools, shipped fast.</span>
+  <span><a href="../student-kit/">Student Survival Kit</a></span>
+</div></footer>
+
+<div class="toast" id="toast" role="status">Copied — go get that grade.</div>
+
+<script>
+/* Segmented control */
+const seg=document.getElementById('seg'),thumb=document.getElementById('segThumb');
+const segBtns=[...seg.querySelectorAll('button')];
+function setMode(btn){
+  thumb.style.width=btn.offsetWidth+'px';
+  thumb.style.transform=`translateX(${btn.offsetLeft-3}px)`;
+  segBtns.forEach(b=>b.setAttribute('aria-pressed',b===btn));
+  document.querySelectorAll('.mode').forEach(m=>m.classList.remove('active'));
+  document.getElementById('mode-'+btn.dataset.mode).classList.add('active');
+}
+segBtns.forEach(b=>b.addEventListener('pointerdown',()=>setMode(b)));
+addEventListener('resize',()=>{const a=segBtns.find(b=>b.getAttribute('aria-pressed')==='true');if(a)setMode(a)});
+requestAnimationFrame(()=>setMode(segBtns[0]));
+
+/* Mode 1 — what do I need on the final */
+const cur=document.getElementById('cur'),want=document.getElementById('want'),weight=document.getElementById('weight');
+const resF=document.getElementById('res-final'),need=document.getElementById('need'),needMsg=document.getElementById('needMsg');
+let lastNeed=null;
+function calcFinal(){
+  const c=parseFloat(cur.value),w=parseFloat(want.value),f=parseFloat(weight.value);
+  if(isNaN(c)||isNaN(w)||isNaN(f)||f<=0){resF.classList.remove('show');lastNeed=null;return}
+  const n=(w-c*(1-f/100))/(f/100);
+  lastNeed=n;
+  resF.classList.add('show');
+  resF.classList.remove('good','ok','hard');
+  need.textContent=(n<=0?0:Math.round(n*10)/10)+'%';
+  if(n<=0){resF.classList.add('good');needMsg.textContent="You've already locked in your target. The final literally cannot stop you."}
+  else if(n<=60){resF.classList.add('good');needMsg.textContent=`Very doable. Score ${Math.ceil(n)}% or better and the ${w}% is yours.`}
+  else if(n<=85){resF.classList.add('ok');needMsg.textContent=`Within reach — you need ${Math.ceil(n)}%. A focused 3-week plan makes this routine.`}
+  else if(n<=100){resF.classList.add('hard');needMsg.textContent=`Tough but possible: ${Math.ceil(n)}%. Every study session between now and the exam counts.`}
+  else{resF.classList.add('hard');needMsg.textContent=`You'd need ${Math.ceil(n)}% — above a perfect score. Talk to your teacher about extra credit, and reset the target to ${Math.floor((cur.value*(1-f/100))+f/100*100)}% (your max).`}
+}
+[cur,want,weight].forEach(i=>i.addEventListener('input',calcFinal));
+
+/* Share */
+document.getElementById('share').addEventListener('click',()=>{
+  if(lastNeed===null)return;
+  const t=`I need ${Math.max(0,Math.ceil(lastNeed))}% on my final to hit my target 🎯 — calculated in 5 seconds: ${location.href}`;
+  navigator.clipboard.writeText(t).then(()=>{const x=document.getElementById('toast');x.classList.add('show');setTimeout(()=>x.classList.remove('show'),2200)});
+});
+
+/* Mode 2 — weighted average */
+const rows=document.getElementById('rows'),avgEl=document.getElementById('avg'),avgMsg=document.getElementById('avgMsg'),resA=document.getElementById('res-avg');
+function addRow(n='',s='',w=''){
+  const d=document.createElement('div');d.className='row';
+  d.innerHTML=`<input class="input" placeholder="Midterm" value="${n}">
+    <input class="input" type="number" inputmode="decimal" placeholder="80" min="0" max="120" value="${s}">
+    <input class="input" type="number" inputmode="decimal" placeholder="30" min="0" max="100" value="${w}">
+    <button class="row-del" aria-label="Remove row">×</button>`;
+  d.querySelector('.row-del').addEventListener('click',()=>{d.remove();calcAvg()});
+  d.querySelectorAll('input').forEach(i=>i.addEventListener('input',calcAvg));
+  rows.appendChild(d);
+}
+document.getElementById('addRow').addEventListener('click',()=>addRow());
+addRow('Quiz 1','','');addRow('Midterm','','');addRow('Homework','','');
+function calcAvg(){
+  let sw=0,acc=0;
+  rows.querySelectorAll('.row').forEach(r=>{
+    const[,s,w]=r.querySelectorAll('input');
+    const sv=parseFloat(s.value),wv=parseFloat(w.value);
+    if(!isNaN(sv)&&!isNaN(wv)){acc+=sv*wv;sw+=wv}
+  });
+  if(sw<=0){resA.classList.remove('show');return}
+  const a=acc/sw;
+  resA.classList.add('show');resA.classList.remove('good','ok','hard');
+  avgEl.textContent=(Math.round(a*10)/10)+'%';
+  resA.classList.add(a>=85?'good':a>=70?'ok':'hard');
+  avgMsg.textContent=sw<100?`Based on ${sw}% of your grade so far — ${100-sw}% is still on the table.`:`That's your full course grade.`;
+}
+</script>
+</body>
+</html>
