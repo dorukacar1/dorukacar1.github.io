@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doruk's Lab — small tools, shipped fast</title>
+<meta name="description" content="Free web tools and student products, built fast and built properly.">
+<style>
+:root{
+  --bg:#faf9f7; --bg-raised:#f2f0ec; --ink:#1c1b18; --ink-2:#57544d; --ink-3:#8a867c;
+  --accent:#0f5c46; --hairline:rgba(28,27,24,.10);
+  --shadow-1:0 1px 2px rgba(28,27,24,.05),0 2px 8px rgba(28,27,24,.04);
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font:100%/1.6 var(--font);-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--ink);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem 1.25rem}
+.wrap{max-width:26rem;width:100%}
+h1{font-size:1.75rem;letter-spacing:-0.02em;display:flex;align-items:center;gap:.625rem}
+h1 span{width:11px;height:11px;border-radius:999px;background:var(--accent);flex-shrink:0}
+.sub{color:var(--ink-2);margin:.375rem 0 2rem;font-size:.9375rem}
+.apps{display:flex;flex-direction:column;gap:.75rem}
+.app{display:block;padding:1.125rem 1.25rem;background:var(--bg);border:1px solid var(--hairline);border-radius:14px;color:var(--ink);text-decoration:none;transition:border-color 180ms var(--ease-out),box-shadow 180ms var(--ease-out),transform 120ms var(--ease-out)}
+.app:hover{border-color:rgba(28,27,24,.25);box-shadow:var(--shadow-1)}
+.app:active{transform:scale(.985)}
+.app .n{font-weight:650;font-size:1rem;display:flex;justify-content:space-between;align-items:center}
+.app .n em{font-style:normal;font-size:.6875rem;font-weight:700;letter-spacing:.03em;color:var(--accent)}
+.app .d{font-size:.8125rem;color:var(--ink-2);margin-top:.2rem}
+footer{margin-top:2.5rem;font-size:.75rem;color:var(--ink-3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><span></span>Doruk's Lab</h1>
+  <p class="sub">Small tools & experiments, shipped fast.</p>
+  <div class="apps">
+    <a class="app" href="final-grade-calculator/">
+      <div class="n">Final Grade Calculator <em>FREE</em></div>
+      <div class="d">What do you need on the final? Answer in one second.</div>
+    </a>
+    <a class="app" href="student-kit/">
+      <div class="n">Student Survival Kit '26–'27 <em>$7.99</em></div>
+      <div class="d">Your whole semester, organized in one evening.</div>
+    </a>
+  </div>
+  <footer>Built fast, built properly · 2026</footer>
+</div>
+</body>
+</html>
