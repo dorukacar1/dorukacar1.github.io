@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Survival Kit '26–'27 — Your whole semester, organized in one evening</title>
+<meta name="description" content="Exam countdowns, grade tracking that tells you what you need on the final, a weekly planner, and 5 printables. One file, works offline, $7.99.">
+<style>
+:root{
+  --bg:#fbf7f1; --bg-raised:#f4ecdf; --bg-sunken:#efe5d4;
+  --ink:#26201a; --ink-2:#5f574c; --ink-3:#948a7c;
+  --accent:#e0662a; --accent-hover:#c65319; --accent-soft:#fae4d6; --accent-ink:#fff8f3;
+  --good:#2e7d4f;
+  --hairline:rgba(38,32,26,.10);
+  --focus-ring:0 0 0 2px var(--bg),0 0 0 4px var(--accent);
+  --shadow-1:0 1px 2px rgba(38,32,26,.05),0 2px 8px rgba(38,32,26,.04);
+  --shadow-2:0 2px 4px rgba(38,32,26,.06),0 8px 24px rgba(38,32,26,.09);
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+  --t-press:120ms; --t-small:180ms; --t-med:240ms;
+  --r-md:12px; --r-lg:18px; --r-full:999px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font:100%/1.6 var(--font);-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink)}
+::selection{background:var(--accent-soft);color:var(--accent-hover)}
+.wrap{max-width:46rem;margin:0 auto;padding:0 1.25rem}
+
+header{padding:1rem 0}
+header .wrap{display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:700;font-size:.9375rem;color:var(--ink);text-decoration:none;display:flex;gap:.5rem;align-items:center}
+.logo span{width:9px;height:9px;border-radius:var(--r-full);background:var(--accent)}
+
+.btn{-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font:inherit;font-size:1rem;font-weight:650;padding:.875rem 1.75rem;border-radius:var(--r-md);border:none;cursor:pointer;text-decoration:none;transition:transform var(--t-press) var(--ease-out),background var(--t-small) var(--ease-out),box-shadow var(--t-small) var(--ease-out)}
+.btn:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);box-shadow:var(--shadow-1)}
+.btn-primary:hover{background:var(--accent-hover);box-shadow:var(--shadow-2)}
+.btn-ghost{background:transparent;color:var(--ink-2);font-size:.875rem;padding:.5rem 1rem}
+.btn-ghost:hover{background:var(--bg-raised);color:var(--ink)}
+
+.hero{padding:3.5rem 0 2.5rem}
+.kicker{font-size:.8125rem;font-weight:700;color:var(--accent);letter-spacing:.04em;text-transform:uppercase}
+h1{font-size:clamp(1.9rem,5.5vw,2.9rem);line-height:1.06;letter-spacing:-0.024em;font-weight:750;margin-top:.625rem;max-width:14em}
+.hero .lead{margin-top:1rem;font-size:1.125rem;color:var(--ink-2);max-width:34em}
+.hero .cta-row{margin-top:1.75rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.hero .price{font-size:.875rem;color:var(--ink-3)}
+.hero .price b{color:var(--ink);font-size:1.0625rem}
+
+.before-after{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin:2.5rem 0}
+@media(max-width:38rem){.before-after{grid-template-columns:1fr}}
+.ba{border-radius:var(--r-lg);padding:1.375rem}
+.ba h3{font-size:.8125rem;letter-spacing:.04em;text-transform:uppercase;margin-bottom:.625rem}
+.ba ul{list-style:none;font-size:.9375rem;display:flex;flex-direction:column;gap:.45rem}
+.ba-before{background:var(--bg-raised);color:var(--ink-2)}
+.ba-before h3{color:var(--ink-3)}
+.ba-after{background:var(--ink);color:#e9e2d6;box-shadow:var(--shadow-2)}
+.ba-after h3{color:var(--accent)}
+
+section{padding:2rem 0}
+h2{font-size:1.5rem;letter-spacing:-0.016em;font-weight:700;max-width:20em}
+.features{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-top:1.375rem}
+@media(max-width:38rem){.features{grid-template-columns:1fr}}
+.feat{background:var(--bg-raised);border-radius:var(--r-lg);padding:1.25rem}
+.feat h3{font-size:1rem;font-weight:650;letter-spacing:-0.008em}
+.feat p{font-size:.875rem;color:var(--ink-2);margin-top:.375rem}
+.feat .n{display:inline-flex;width:1.75rem;height:1.75rem;background:var(--accent-soft);color:var(--accent-hover);border-radius:var(--r-full);align-items:center;justify-content:center;font-weight:700;font-size:.8125rem;margin-bottom:.625rem}
+
+.pricing{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-top:1.375rem}
+@media(max-width:38rem){.pricing{grid-template-columns:1fr}}
+.tier{background:var(--bg);border-radius:var(--r-lg);padding:1.5rem;box-shadow:var(--shadow-2);display:flex;flex-direction:column}
+.tier.dim{background:var(--bg-raised);box-shadow:none}
+.tier .name{font-weight:700;font-size:1rem}
+.tier .amount{font-size:2.25rem;font-weight:750;letter-spacing:-0.03em;margin:.375rem 0 .125rem;font-variant-numeric:tabular-nums}
+.tier .amount small{font-size:.9375rem;font-weight:500;color:var(--ink-3);letter-spacing:0}
+.tier ul{list-style:none;font-size:.875rem;color:var(--ink-2);display:flex;flex-direction:column;gap:.4rem;margin:.875rem 0 1.25rem}
+.tier ul li::before{content:"✓  ";color:var(--good);font-weight:700}
+.tier .btn{margin-top:auto}
+.badge{display:inline-block;font-size:.6875rem;font-weight:700;background:var(--accent-soft);color:var(--accent-hover);border-radius:var(--r-full);padding:.2rem .625rem;letter-spacing:.03em;margin-bottom:.5rem;align-self:flex-start}
+
+.guarantee{margin-top:1rem;font-size:.8125rem;color:var(--ink-3);text-align:center}
+.faq{margin-top:1.25rem;display:flex;flex-direction:column;gap:.5rem}
+details{background:var(--bg-raised);border-radius:var(--r-md);padding:1rem 1.25rem}
+summary{font-weight:600;font-size:.9375rem;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::after{content:"+";font-size:1.25rem;color:var(--ink-3);transition:transform var(--t-med) var(--ease-out)}
+details[open] summary::after{transform:rotate(45deg)}
+details p{margin-top:.625rem;font-size:.875rem;color:var(--ink-2)}
+
+.final-cta{background:var(--ink);color:#f6f1e9;border-radius:var(--r-lg);padding:2.25rem;margin:2.5rem 0;text-align:center;box-shadow:var(--shadow-2)}
+.final-cta h2{max-width:none;color:#f6f1e9}
+.final-cta p{color:#c9c0b2;margin-top:.5rem;font-size:.9375rem}
+.final-cta .btn{margin-top:1.375rem}
+.final-cta .tiny{margin-top:.75rem;font-size:.75rem;color:#948a7c}
+
+footer{padding:1.5rem 0 3rem;color:var(--ink-3);font-size:.8125rem}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+footer a{color:var(--ink-2);text-decoration:none}
+@media(prefers-reduced-motion:reduce){*{transition-duration:1ms!important}}
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <a class="logo" href="../"><span></span>Doruk's Lab</a>
+  <a class="btn btn-ghost" href="../final-grade-calculator/">Free grade calculator</a>
+</div></header>
+
+<main class="wrap">
+
+<section class="hero">
+  <div class="kicker">Student Survival Kit '26–'27</div>
+  <h1>Your whole semester, organized in one evening.</h1>
+  <p class="lead">An exam countdown board, grade tracking that tells you <em>exactly</em> what you need on the final, a weekly planner, and 5 printables. One file. Works offline. Yours forever.</p>
+  <div class="cta-row">
+    <a class="btn btn-primary" href="#pricing">Get my kit — $7.99</a>
+    <span class="price">Instant download · No subscription</span>
+  </div>
+</section>
+
+<div class="before-after">
+  <div class="ba ba-before">
+    <h3>Without a system</h3>
+    <ul>
+      <li>“Wait, the midterm is NEXT week?”</li>
+      <li>Grades scattered across screenshots</li>
+      <li>All-nighter the day before, every time</li>
+      <li>“What do I even need on the final?”</li>
+    </ul>
+  </div>
+  <div class="ba ba-after">
+    <h3>With the kit</h3>
+    <ul>
+      <li>Every exam counted down, sorted by urgency</li>
+      <li>Every course tracked with a target</li>
+      <li>“You need 72% on the rest” — calculated live</li>
+      <li>A week you planned in 5 minutes on Sunday</li>
+    </ul>
+  </div>
+</div>
+
+<section>
+  <h2>Four tools that carry you from week 1 to finals</h2>
+  <div class="features">
+    <div class="feat"><span class="n">1</span><h3>Exam countdown board</h3><p>Add every exam once. The dashboard always shows what's coming first and how many days you've got.</p></div>
+    <div class="feat"><span class="n">2</span><h3>Grade tracker that does the math</h3><p>Enter scores and weights, set a target — it tells you the exact average you need on the remaining work. No more guessing.</p></div>
+    <div class="feat"><span class="n">3</span><h3>Weekly schedule + study list</h3><p>Your classes and study blocks in one color-coded week, plus a task list that keeps sessions specific and small.</p></div>
+    <div class="feat"><span class="n">4</span><h3>5 printable A4 planners</h3><p>Weekly planner, exam runway tracker, semester map, session log, grade sheet — for the wall above your desk.</p></div>
+  </div>
+</section>
+
+<section id="pricing">
+  <h2>One price. No subscription. The whole year.</h2>
+  <div class="pricing">
+    <div class="tier">
+      <span class="badge">MOST POPULAR</span>
+      <div class="name">Personal</div>
+      <div class="amount">$7.99 <small>once</small></div>
+      <ul>
+        <li>The offline planner app (one file)</li>
+        <li>All 5 printable planners (PDF)</li>
+        <li>Free updates for '26–'27</li>
+        <li>Use on all your own devices</li>
+      </ul>
+      <a class="btn btn-primary" href="https://dorukacar.gumroad.com/l/student-kit">Get my kit — $7.99</a>
+    </div>
+    <div class="tier dim">
+      <div class="name">Family & Teachers</div>
+      <div class="amount">$14.99 <small>once</small></div>
+      <ul>
+        <li>Everything in Personal</li>
+        <li>Share with up to 6 students / your class</li>
+        <li>Both A4 printables + editable source</li>
+        <li>Priority answers to questions</li>
+      </ul>
+      <a class="btn btn-primary" style="background:var(--ink)" href="https://dorukacar.gumroad.com/l/student-kit-family">Get the family license</a>
+    </div>
+  </div>
+  <div class="guarantee">Not organized within a week? Reply on Gumroad and I'll refund you. No forms, no fuss.</div>
+</section>
+
+<section>
+  <h2>Questions students actually ask</h2>
+  <div class="faq">
+    <details><summary>Do I need an account or internet?</summary><p>No and no. It's one HTML file — double-click, it opens in any browser, and your data stays on your device. Nothing is uploaded anywhere, ever.</p></details>
+    <details><summary>Does it work on my phone?</summary><p>Yes — open the file once and use "Add to Home Screen". It behaves like an app, offline included.</p></details>
+    <details><summary>What if I switch devices mid-semester?</summary><p>Tap "Backup" (downloads one small file), then "Restore" on the new device. Takes 20 seconds.</p></details>
+    <details><summary>Is this a subscription?</summary><p>No. $7.99 once, yours forever, including any '26–'27 updates.</p></details>
+  </div>
+</section>
+
+<div class="final-cta">
+  <h2>Finals are won in the 3 weeks before them.</h2>
+  <p>Set your system up tonight — it takes about 20 minutes, and it runs your whole year.</p>
+  <a class="btn btn-primary" href="https://dorukacar.gumroad.com/l/student-kit">Get my kit — $7.99</a>
+  <div class="tiny">Instant download · Works offline · Refund if it doesn't help</div>
+</div>
+
+</main>
+
+<footer><div class="wrap">
+  <span>Made by <a href="../">Doruk's Lab</a> — small tools, shipped fast.</span>
+  <span><a href="../final-grade-calculator/">Free: Final Grade Calculator</a></span>
+</div></footer>
+
+</body>
+</html>
