@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semester Grade Planner — What Do I Need on the Rest?</title>
+<meta name="description" content="Enter the grades you already have and your target — see exactly what average you need on everything that's left. Free, no signup.">
+<style>
+:root{
+  --bg:#fbf7f1; --bg-raised:#f4ecdf; --bg-sunken:#efe5d4;
+  --ink:#26201a; --ink-2:#5f574c; --ink-3:#948a7c;
+  --accent:#e0662a; --accent-hover:#c65319; --accent-soft:#fae4d6; --accent-ink:#fff8f3;
+  --good:#2e7d4f; --warn:#a4331f;
+  --hairline:rgba(38,32,26,.10);
+  --focus-ring:0 0 0 2px var(--bg),0 0 0 4px var(--accent);
+  --shadow-2:0 2px 4px rgba(38,32,26,.06),0 8px 24px rgba(38,32,26,.09);
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --ease-out:cubic-bezier(0.23,1,0.32,1); --t-press:120ms; --t-small:180ms; --t-med:240ms;
+  --r-md:12px; --r-lg:18px; --r-full:999px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font:100%/1.6 var(--font);-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--ink);min-height:100vh}
+::selection{background:var(--accent-soft);color:var(--accent-hover)}
+.wrap{max-width:44rem;margin:0 auto;padding:0 1.25rem}
+header{padding:1rem 0}
+header .wrap{display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:700;font-size:.9375rem;color:var(--ink);text-decoration:none;display:flex;gap:.5rem;align-items:center}
+.logo span{width:9px;height:9px;border-radius:var(--r-full);background:var(--accent)}
+.hero{padding:2.5rem 0 1.5rem}
+h1{font-size:clamp(1.75rem,5vw,2.6rem);line-height:1.08;letter-spacing:-0.022em;font-weight:700}
+.hero p{margin-top:.875rem;color:var(--ink-2);font-size:1.0625rem;max-width:38em}
+h2{font-size:1rem;font-weight:650;margin-bottom:.75rem;letter-spacing:-0.008em}
+.panel{background:var(--bg-raised);border-radius:var(--r-lg);padding:1.5rem;margin:1rem 0}
+.row-head{display:grid;grid-template-columns:1fr 5.5rem 5.5rem 2.25rem;gap:.5rem;font-size:.75rem;font-weight:600;color:var(--ink-3);padding:0 .125rem;margin-bottom:.5rem}
+.rows{display:flex;flex-direction:column;gap:.625rem}
+.row{display:grid;grid-template-columns:1fr 5.5rem 5.5rem 2.25rem;gap:.5rem;align-items:center}
+.input{font:inherit;font-size:.9375rem;color:var(--ink);background:var(--bg);border:1px solid var(--hairline);border-radius:var(--r-md);padding:.625rem .75rem;width:100%;transition:border-color var(--t-small) var(--ease-out),box-shadow var(--t-small) var(--ease-out)}
+.input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.row-del{-webkit-tap-highlight-color:transparent;border:none;background:none;color:var(--ink-3);font-size:1.125rem;cursor:pointer;border-radius:8px;height:2.25rem;transition:color var(--t-small) var(--ease-out),background var(--t-small) var(--ease-out)}
+.row-del:hover{color:var(--warn);background:#f7e3de}
+.btn{-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font:inherit;font-size:.875rem;font-weight:600;padding:.625rem 1.125rem;border-radius:var(--r-md);border:none;cursor:pointer;text-decoration:none;transition:transform var(--t-press) var(--ease-out),background var(--t-small) var(--ease-out)}
+.btn:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.btn:active{transform:scale(.97)}
+.btn-ghost{background:transparent;color:var(--ink-2)}
+.btn-ghost:hover{background:var(--bg-raised);color:var(--ink)}
+.target-line{display:flex;align-items:center;gap:.75rem;margin-top:.25rem}
+.target-line label{font-size:.9375rem;font-weight:600;color:var(--ink-2)}
+.target-line .input{max-width:7rem}
+.result{background:var(--bg);border-radius:var(--r-lg);padding:1.75rem;box-shadow:var(--shadow-2);text-align:center;margin-top:1rem;opacity:0;transform:translateY(8px);transition:opacity var(--t-med) var(--ease-out),transform var(--t-med) var(--ease-out)}
+.result.show{opacity:1;transform:none}
+.result .big{font-size:3rem;font-weight:750;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums}
+.result .msg{margin-top:.625rem;font-size:.9375rem;color:var(--ink-2);max-width:32em;margin-left:auto;margin-right:auto}
+.result.good .big{color:var(--good)} .result.ok .big{color:var(--accent)} .result.hard .big{color:var(--warn)}
+.upsell{margin:2.5rem 0;background:var(--ink);color:#f6f1e9;border-radius:var(--r-lg);padding:2rem;box-shadow:var(--shadow-2)}
+.upsell h3{font-size:1.375rem;letter-spacing:-0.015em}
+.upsell p{margin-top:.625rem;color:#c9c0b2;font-size:.9375rem;max-width:36em}
+.upsell .btn{margin-top:1.25rem;background:var(--accent);color:var(--accent-ink)}
+.more{margin:2rem 0;font-size:.9375rem;color:var(--ink-2)}
+.more a{color:var(--accent-hover);text-decoration:none;font-weight:600}
+footer{padding:2rem 0 3rem;color:var(--ink-3);font-size:.8125rem}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+footer a{color:var(--ink-2);text-decoration:none}
+@media(prefers-reduced-motion:reduce){*{transition-duration:1ms!important}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="logo" href="../"><span></span>Doruk's Lab</a>
+  <a class="btn btn-ghost" href="../student-kit/">Student Kit →</a>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>Semester Grade Planner</h1>
+    <p>Enter what you've already scored and what you're aiming for — see the exact average you need on everything that's left.</p>
+  </section>
+
+  <div class="panel">
+    <h2>Grades you already have</h2>
+    <div class="row-head"><span>Assignment</span><span>Score %</span><span>Weight %</span><span></span></div>
+    <div class="rows" id="rows"></div>
+    <button class="btn btn-ghost" id="addRow" style="margin-top:.875rem">+ Add row</button>
+  </div>
+
+  <div class="panel">
+    <div class="target-line">
+      <label for="want">My target for the course:</label>
+      <input class="input" id="want" type="number" inputmode="decimal" min="0" max="120" placeholder="85">
+      <span style="color:var(--ink-3)">%</span>
+    </div>
+  </div>
+
+  <div class="result" id="res" role="status">
+    <div class="big" id="need">—</div>
+    <div class="msg" id="needMsg"></div>
+  </div>
+
+  <div class="more">More free tools: <a href="../final-grade-calculator/">Final Grade Calculator</a> · <a href="../gpa-calculator/">GPA Calculator</a> · <a href="../attendance-calculator/">Attendance Calculator</a></div>
+
+  <section class="upsell">
+    <h3>Knowing the number is step one. Hitting it is a plan.</h3>
+    <p>The <strong>Student Survival Kit '26–'27</strong> keeps this math running live for every course all semester — plus exam countdowns, a weekly planner, and 5 printables. One offline file, yours forever.</p>
+    <a class="btn" href="../student-kit/">Show me the kit — $7.99</a>
+  </section>
+</main>
+
+<footer><div class="wrap">
+  <span>Made by <a href="../">Doruk's Lab</a> — small tools, shipped fast.</span>
+  <span><a href="../student-kit/">Student Survival Kit</a></span>
+</div></footer>
+
+<script>
+const rows=document.getElementById('rows'),res=document.getElementById('res');
+const need=document.getElementById('need'),needMsg=document.getElementById('needMsg'),want=document.getElementById('want');
+function addRow(n=''){
+  const d=document.createElement('div');d.className='row';
+  d.innerHTML=`<input class="input" placeholder="${n||'e.g. Midterm'}">
+    <input class="input" type="number" inputmode="decimal" min="0" max="120" placeholder="80">
+    <input class="input" type="number" inputmode="decimal" min="0" max="100" placeholder="25">
+    <button class="row-del" aria-label="Remove">×</button>`;
+  d.querySelector('.row-del').addEventListener('click',()=>{d.remove();calc()});
+  d.querySelectorAll('input').forEach(i=>i.addEventListener('input',calc));
+  rows.appendChild(d);
+}
+document.getElementById('addRow').addEventListener('click',()=>addRow());
+addRow('Quiz 1');addRow('Midterm');addRow('Homework avg');
+want.addEventListener('input',calc);
+function calc(){
+  let acc=0,sw=0;
+  rows.querySelectorAll('.row').forEach(r=>{
+    const[,s,w]=r.querySelectorAll('input');
+    const sv=parseFloat(s.value),wv=parseFloat(w.value);
+    if(!isNaN(sv)&&!isNaN(wv)){acc+=sv*wv/100;sw+=wv}
+  });
+  const t=parseFloat(want.value);
+  if(sw<=0||isNaN(t)){res.classList.remove('show');return}
+  const remaining=100-sw;
+  res.classList.add('show');res.classList.remove('good','ok','hard');
+  if(remaining<=0){
+    const fin=acc;
+    need.textContent=fin.toFixed(1)+'%';
+    res.classList.add(fin>=t?'good':'hard');
+    needMsg.textContent=fin>=t?`Course complete — you finished at ${fin.toFixed(1)}%, target hit. 🎉`:`Course complete at ${fin.toFixed(1)}% — below the ${t}% target.`;
+    return;
+  }
+  const n=(t-acc)/(remaining/100);
+  need.textContent=(n<=0?0:Math.round(n*10)/10)+'%';
+  if(n<=0){res.classList.add('good');needMsg.textContent=`Target already locked in — anything on the remaining ${remaining}% keeps you at ${t}%+.`}
+  else if(n<=60){res.classList.add('good');needMsg.textContent=`Very doable: average ${Math.ceil(n)}% on the remaining ${remaining}% and the ${t}% is yours.`}
+  else if(n<=85){res.classList.add('ok');needMsg.textContent=`Within reach — you need a ${Math.ceil(n)}% average on the remaining ${remaining}%. Plan the weeks, not the night before.`}
+  else if(n<=100){res.classList.add('hard');needMsg.textContent=`Tough but possible: ${Math.ceil(n)}% average on the remaining ${remaining}%. Every session counts now.`}
+  else{res.classList.add('hard');needMsg.textContent=`You'd need ${Math.ceil(n)}% — above perfect. Consider a realistic target of ${Math.floor(acc+remaining)}% (your max) and talk to your teacher about extra credit.`}
+}
+</script>
+</body>
+</html>
