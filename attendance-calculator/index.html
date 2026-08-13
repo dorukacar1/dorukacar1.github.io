@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attendance Calculator — Can I Skip Class?</title>
+<meta name="description" content="Check your attendance percentage and find out exactly how many classes you can still skip — or how many you must attend to get back above the line. Free, no signup.">
+<style>
+:root{
+  --bg:#fbf7f1; --bg-raised:#f4ecdf; --bg-sunken:#efe5d4;
+  --ink:#26201a; --ink-2:#5f574c; --ink-3:#948a7c;
+  --accent:#e0662a; --accent-hover:#c65319; --accent-soft:#fae4d6; --accent-ink:#fff8f3;
+  --good:#2e7d4f; --warn:#a4331f;
+  --hairline:rgba(38,32,26,.10);
+  --focus-ring:0 0 0 2px var(--bg),0 0 0 4px var(--accent);
+  --shadow-2:0 2px 4px rgba(38,32,26,.06),0 8px 24px rgba(38,32,26,.09);
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --ease-out:cubic-bezier(0.23,1,0.32,1); --t-press:120ms; --t-small:180ms; --t-med:240ms;
+  --r-md:12px; --r-lg:18px; --r-full:999px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font:100%/1.6 var(--font);-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--ink);min-height:100vh}
+::selection{background:var(--accent-soft);color:var(--accent-hover)}
+.wrap{max-width:44rem;margin:0 auto;padding:0 1.25rem}
+header{padding:1rem 0}
+header .wrap{display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:700;font-size:.9375rem;color:var(--ink);text-decoration:none;display:flex;gap:.5rem;align-items:center}
+.logo span{width:9px;height:9px;border-radius:var(--r-full);background:var(--accent)}
+.hero{padding:2.5rem 0 1.5rem}
+h1{font-size:clamp(1.75rem,5vw,2.6rem);line-height:1.08;letter-spacing:-0.022em;font-weight:700}
+.hero p{margin-top:.875rem;color:var(--ink-2);font-size:1.0625rem;max-width:38em}
+.panel{background:var(--bg-raised);border-radius:var(--r-lg);padding:1.5rem;margin:1.25rem 0 1rem}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+@media(max-width:34rem){.grid3{grid-template-columns:1fr}}
+.field label{display:block;font-size:.8125rem;font-weight:600;color:var(--ink-2);margin-bottom:.375rem}
+.input{font:inherit;font-size:1.0625rem;color:var(--ink);background:var(--bg);border:1px solid var(--hairline);border-radius:var(--r-md);padding:.75rem .875rem;width:100%;transition:border-color var(--t-small) var(--ease-out),box-shadow var(--t-small) var(--ease-out)}
+.input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.result{background:var(--bg);border-radius:var(--r-lg);padding:1.75rem;box-shadow:var(--shadow-2);text-align:center;opacity:0;transform:translateY(8px);transition:opacity var(--t-med) var(--ease-out),transform var(--t-med) var(--ease-out)}
+.result.show{opacity:1;transform:none}
+.result .big{font-size:3rem;font-weight:750;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums}
+.result .msg{margin-top:.625rem;font-size:.9375rem;color:var(--ink-2);max-width:32em;margin-left:auto;margin-right:auto}
+.result.good .big{color:var(--good)} .result.hard .big{color:var(--warn)}
+.btn{-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font:inherit;font-size:.875rem;font-weight:600;padding:.625rem 1.125rem;border-radius:var(--r-md);border:none;cursor:pointer;text-decoration:none;transition:transform var(--t-press) var(--ease-out),background var(--t-small) var(--ease-out)}
+.btn:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.btn:active{transform:scale(.97)}
+.btn-ghost{background:transparent;color:var(--ink-2)}
+.btn-ghost:hover{background:var(--bg-raised);color:var(--ink)}
+.upsell{margin:2.5rem 0;background:var(--ink);color:#f6f1e9;border-radius:var(--r-lg);padding:2rem;box-shadow:var(--shadow-2)}
+.upsell h2{font-size:1.375rem;letter-spacing:-0.015em}
+.upsell p{margin-top:.625rem;color:#c9c0b2;font-size:.9375rem;max-width:36em}
+.upsell .btn{margin-top:1.25rem;background:var(--accent);color:var(--accent-ink)}
+.more{margin:2rem 0;font-size:.9375rem;color:var(--ink-2)}
+.more a{color:var(--accent-hover);text-decoration:none;font-weight:600}
+footer{padding:2rem 0 3rem;color:var(--ink-3);font-size:.8125rem}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+footer a{color:var(--ink-2);text-decoration:none}
+@media(prefers-reduced-motion:reduce){*{transition-duration:1ms!important}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="logo" href="../"><span></span>Doruk's Lab</a>
+  <a class="btn btn-ghost" href="../student-kit/">Student Kit →</a>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>Can I skip class?</h1>
+    <p>Type three numbers — get your attendance percentage and exactly how many classes you can still miss (or must attend) to stay above the requirement.</p>
+  </section>
+
+  <div class="panel">
+    <div class="grid3">
+      <div class="field"><label for="att">Classes attended</label>
+        <input class="input" id="att" type="number" inputmode="numeric" min="0" placeholder="e.g. 34"></div>
+      <div class="field"><label for="held">Classes held so far</label>
+        <input class="input" id="held" type="number" inputmode="numeric" min="1" placeholder="e.g. 40"></div>
+      <div class="field"><label for="req">Required %</label>
+        <input class="input" id="req" type="number" inputmode="decimal" min="1" max="100" value="75"></div>
+    </div>
+  </div>
+
+  <div class="result" id="res" role="status">
+    <div class="big" id="pct">—</div>
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <div class="more">More free tools: <a href="../final-grade-calculator/">Final Grade Calculator</a> · <a href="../gpa-calculator/">GPA Calculator</a> · <a href="../semester-grade-planner/">Semester Grade Planner</a></div>
+
+  <section class="upsell">
+    <h2>Skipping is a budget. Spend it on purpose.</h2>
+    <p>The <strong>Student Survival Kit '26–'27</strong> keeps your whole semester visible — exam countdowns, grade targets, weekly plan — so you know exactly which classes you can afford to miss.</p>
+    <a class="btn" href="../student-kit/">Show me the kit — $7.99</a>
+  </section>
+</main>
+
+<footer><div class="wrap">
+  <span>Made by <a href="../">Doruk's Lab</a> — small tools, shipped fast.</span>
+  <span><a href="../student-kit/">Student Survival Kit</a></span>
+</div></footer>
+
+<script>
+const att=document.getElementById('att'),held=document.getElementById('held'),req=document.getElementById('req');
+const res=document.getElementById('res'),pct=document.getElementById('pct'),msg=document.getElementById('msg');
+[att,held,req].forEach(i=>i.addEventListener('input',calc));
+function calc(){
+  const a=parseFloat(att.value),h=parseFloat(held.value),r=parseFloat(req.value);
+  if(isNaN(a)||isNaN(h)||isNaN(r)||h<=0||a>h||r<=0){res.classList.remove('show');return}
+  const p=a/h*100;
+  pct.textContent=p.toFixed(1)+'%';
+  res.classList.add('show');res.classList.remove('good','hard');
+  if(p>=r){
+    // how many future classes can be skipped in a row while staying >= r%
+    // (a)/(h+x) >= r/100  ->  x <= a*100/r - h
+    const canSkip=Math.floor(a*100/r-h);
+    res.classList.add('good');
+    msg.textContent=canSkip<=0
+      ?`You're above the ${r}% line, but with zero margin — the very next skip drops you under. Attend the next one.`
+      :`You're above the line. You can skip up to ${canSkip} more ${canSkip===1?'class':'classes'} and still stay at ${r}%+ — spend them wisely.`;
+  }else{
+    // must attend x in a row: (a+x)/(h+x) >= r/100 -> x >= (r*h - 100a)/(100 - r)
+    res.classList.add('hard');
+    if(r>=100){msg.textContent=`With a ${r}% requirement, every remaining class is mandatory.`;return}
+    const mustAttend=Math.ceil((r*h-100*a)/(100-r));
+    msg.textContent=`You're below the ${r}% line. Attend the next ${mustAttend} ${mustAttend===1?'class':'classes'} in a row to climb back above it.`;
+  }
+}
+</script>
+</body>
+</html>
