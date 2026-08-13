@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPA Calculator — Semester & Cumulative, Free</title>
+<meta name="description" content="Calculate your semester GPA and cumulative GPA in seconds. Free, no signup, works on your phone.">
+<style>
+:root{
+  --bg:#fbf7f1; --bg-raised:#f4ecdf; --bg-sunken:#efe5d4;
+  --ink:#26201a; --ink-2:#5f574c; --ink-3:#948a7c;
+  --accent:#e0662a; --accent-hover:#c65319; --accent-soft:#fae4d6; --accent-ink:#fff8f3;
+  --good:#2e7d4f; --warn:#a4331f;
+  --hairline:rgba(38,32,26,.10);
+  --focus-ring:0 0 0 2px var(--bg),0 0 0 4px var(--accent);
+  --shadow-2:0 2px 4px rgba(38,32,26,.06),0 8px 24px rgba(38,32,26,.09);
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --ease-out:cubic-bezier(0.23,1,0.32,1); --t-press:120ms; --t-small:180ms; --t-med:240ms;
+  --r-md:12px; --r-lg:18px; --r-full:999px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font:100%/1.6 var(--font);-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--ink);min-height:100vh}
+::selection{background:var(--accent-soft);color:var(--accent-hover)}
+.wrap{max-width:44rem;margin:0 auto;padding:0 1.25rem}
+header{padding:1rem 0}
+header .wrap{display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:700;font-size:.9375rem;color:var(--ink);text-decoration:none;display:flex;gap:.5rem;align-items:center}
+.logo span{width:9px;height:9px;border-radius:var(--r-full);background:var(--accent)}
+.hero{padding:2.5rem 0 1.5rem}
+h1{font-size:clamp(1.75rem,5vw,2.6rem);line-height:1.08;letter-spacing:-0.022em;font-weight:700}
+.hero p{margin-top:.875rem;color:var(--ink-2);font-size:1.0625rem;max-width:38em}
+.panel{background:var(--bg-raised);border-radius:var(--r-lg);padding:1.5rem;margin:1.25rem 0 1rem}
+.row-head{display:grid;grid-template-columns:1fr 5rem 6.5rem 2.25rem;gap:.5rem;font-size:.75rem;font-weight:600;color:var(--ink-3);padding:0 .125rem;margin-bottom:.5rem}
+.rows{display:flex;flex-direction:column;gap:.625rem}
+.row{display:grid;grid-template-columns:1fr 5rem 6.5rem 2.25rem;gap:.5rem;align-items:center}
+.input,select.input{font:inherit;font-size:.9375rem;color:var(--ink);background:var(--bg);border:1px solid var(--hairline);border-radius:var(--r-md);padding:.625rem .75rem;width:100%;transition:border-color var(--t-small) var(--ease-out),box-shadow var(--t-small) var(--ease-out)}
+.input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.row-del{-webkit-tap-highlight-color:transparent;border:none;background:none;color:var(--ink-3);font-size:1.125rem;cursor:pointer;border-radius:8px;height:2.25rem;transition:color var(--t-small) var(--ease-out),background var(--t-small) var(--ease-out)}
+.row-del:hover{color:var(--warn);background:#f7e3de}
+.btn{-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font:inherit;font-size:.875rem;font-weight:600;padding:.625rem 1.125rem;border-radius:var(--r-md);border:none;cursor:pointer;text-decoration:none;transition:transform var(--t-press) var(--ease-out),background var(--t-small) var(--ease-out)}
+.btn:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.btn:active{transform:scale(.97)}
+.btn-ghost{background:transparent;color:var(--ink-2)}
+.btn-ghost:hover{background:var(--bg-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover{background:var(--accent-hover)}
+.cum{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--hairline)}
+@media(max-width:34rem){.cum{grid-template-columns:1fr}}
+.field label{display:block;font-size:.8125rem;font-weight:600;color:var(--ink-2);margin-bottom:.375rem}
+.result{background:var(--bg);border-radius:var(--r-lg);padding:1.75rem;box-shadow:var(--shadow-2);text-align:center;opacity:0;transform:translateY(8px);transition:opacity var(--t-med) var(--ease-out),transform var(--t-med) var(--ease-out)}
+.result.show{opacity:1;transform:none}
+.result .grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.result .big{font-size:2.75rem;font-weight:750;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums}
+.result .lbl{font-size:.8125rem;color:var(--ink-3);margin-top:.375rem}
+.upsell{margin:2.5rem 0;background:var(--ink);color:#f6f1e9;border-radius:var(--r-lg);padding:2rem;box-shadow:var(--shadow-2)}
+.upsell h2{font-size:1.375rem;letter-spacing:-0.015em}
+.upsell p{margin-top:.625rem;color:#c9c0b2;font-size:.9375rem;max-width:36em}
+.upsell .btn{margin-top:1.25rem;background:var(--accent);color:var(--accent-ink)}
+.more{margin:2rem 0;font-size:.9375rem;color:var(--ink-2)}
+.more a{color:var(--accent-hover);text-decoration:none;font-weight:600}
+footer{padding:2rem 0 3rem;color:var(--ink-3);font-size:.8125rem}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+footer a{color:var(--ink-2);text-decoration:none}
+@media(prefers-reduced-motion:reduce){*{transition-duration:1ms!important}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="logo" href="../"><span></span>Doruk's Lab</a>
+  <a class="btn btn-ghost" href="../student-kit/">Student Kit →</a>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>GPA Calculator</h1>
+    <p>Semester GPA and cumulative GPA, calculated as you type. Free, no signup.</p>
+  </section>
+
+  <div class="panel">
+    <div class="row-head"><span>Course</span><span>Credits</span><span>Grade</span><span></span></div>
+    <div class="rows" id="rows"></div>
+    <button class="btn btn-ghost" id="addRow" style="margin-top:.875rem">+ Add course</button>
+    <div class="cum">
+      <div class="field"><label for="pgpa">Prior cumulative GPA (optional)</label>
+        <input class="input" id="pgpa" type="number" inputmode="decimal" step="0.01" min="0" max="4.3" placeholder="e.g. 3.41"></div>
+      <div class="field"><label for="pcred">Prior credits completed</label>
+        <input class="input" id="pcred" type="number" inputmode="numeric" min="0" placeholder="e.g. 45"></div>
+    </div>
+  </div>
+
+  <div class="result" id="res" role="status">
+    <div class="grid">
+      <div><div class="big" id="semGpa">—</div><div class="lbl">semester GPA</div></div>
+      <div><div class="big" id="cumGpa">—</div><div class="lbl">cumulative GPA</div></div>
+    </div>
+  </div>
+
+  <div class="more">More free tools: <a href="../final-grade-calculator/">Final Grade Calculator</a> · <a href="../semester-grade-planner/">Semester Grade Planner</a> · <a href="../attendance-calculator/">Attendance Calculator</a></div>
+
+  <section class="upsell">
+    <h2>Your GPA is an output. The inputs are what you can control.</h2>
+    <p>The <strong>Student Survival Kit '26–'27</strong> tracks every course, counts down every exam, and tells you exactly what you need on the remaining work — one offline file, plus 5 printable planners.</p>
+    <a class="btn" href="../student-kit/">Show me the kit — $7.99</a>
+  </section>
+</main>
+
+<footer><div class="wrap">
+  <span>Made by <a href="../">Doruk's Lab</a> — small tools, shipped fast.</span>
+  <span><a href="../student-kit/">Student Survival Kit</a></span>
+</div></footer>
+
+<script>
+const SCALE={"A+":4.0,"A":4.0,"A-":3.7,"B+":3.3,"B":3.0,"B-":2.7,"C+":2.3,"C":2.0,"C-":1.7,"D+":1.3,"D":1.0,"D-":0.7,"F":0.0};
+const rows=document.getElementById('rows'),res=document.getElementById('res');
+function addRow(){
+  const d=document.createElement('div');d.className='row';
+  d.innerHTML=`<input class="input" placeholder="e.g. Calculus II">
+    <input class="input" type="number" inputmode="decimal" min="0" step="0.5" placeholder="3">
+    <select class="input"><option value="">—</option>${Object.keys(SCALE).map(g=>`<option>${g}</option>`).join('')}</select>
+    <button class="row-del" aria-label="Remove">×</button>`;
+  d.querySelector('.row-del').addEventListener('click',()=>{d.remove();calc()});
+  d.querySelectorAll('input,select').forEach(i=>i.addEventListener('input',calc));
+  rows.appendChild(d);
+}
+document.getElementById('addRow').addEventListener('click',addRow);
+for(let i=0;i<4;i++)addRow();
+const pgpa=document.getElementById('pgpa'),pcred=document.getElementById('pcred');
+[pgpa,pcred].forEach(i=>i.addEventListener('input',calc));
+function calc(){
+  let pts=0,cr=0;
+  rows.querySelectorAll('.row').forEach(r=>{
+    const[,c]=r.querySelectorAll('input');const g=r.querySelector('select').value;
+    const cv=parseFloat(c.value);
+    if(!isNaN(cv)&&cv>0&&g in SCALE){pts+=SCALE[g]*cv;cr+=cv}
+  });
+  if(cr<=0){res.classList.remove('show');return}
+  const sem=pts/cr;
+  document.getElementById('semGpa').textContent=sem.toFixed(2);
+  const pg=parseFloat(pgpa.value),pc=parseFloat(pcred.value);
+  document.getElementById('cumGpa').textContent=(!isNaN(pg)&&!isNaN(pc)&&pc>0)?((pg*pc+pts)/(pc+cr)).toFixed(2):sem.toFixed(2);
+  res.classList.add('show');
+}
+</script>
+</body>
+</html>
