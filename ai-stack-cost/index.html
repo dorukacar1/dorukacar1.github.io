@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Stack Cost Calculator — What does your AI setup really cost?</title>
+<meta name="description" content="Add up what you actually pay for Copilot, Cursor, Claude, ChatGPT and the rest. Editable prices, instant totals, no signup.">
+<style>
+:root{
+  --bg:#f7f8f7; --bg-raised:#eef0ee; --bg-sunken:#e6e9e6;
+  --ink:#171a18; --ink-2:#4d534f; --ink-3:#848b86;
+  --accent:#0d7a4f; --accent-hover:#0a6340; --accent-soft:#dcefe5; --accent-ink:#f2faf6;
+  --warn:#a4331f;
+  --hairline:rgba(23,26,24,.10);
+  --focus-ring:0 0 0 2px var(--bg),0 0 0 4px var(--accent);
+  --shadow-2:0 2px 4px rgba(23,26,24,.06),0 8px 24px rgba(23,26,24,.09);
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+  --ease-out:cubic-bezier(0.23,1,0.32,1); --ease-in-out:cubic-bezier(0.77,0,0.175,1);
+  --t-press:120ms; --t-small:180ms; --t-med:240ms;
+  --r-md:10px; --r-lg:16px; --r-full:999px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font:100%/1.6 var(--font);-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--ink);min-height:100vh}
+::selection{background:var(--accent-soft);color:var(--accent-hover)}
+.wrap{max-width:46rem;margin:0 auto;padding:0 1.25rem}
+header{padding:1rem 0}
+header .wrap{display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:700;font-size:.9375rem;color:var(--ink);text-decoration:none;display:flex;gap:.5rem;align-items:center}
+.logo span{width:9px;height:9px;border-radius:var(--r-full);background:var(--accent)}
+.hero{padding:2.5rem 0 1.5rem}
+h1{font-size:clamp(1.75rem,5vw,2.5rem);line-height:1.08;letter-spacing:-0.022em;font-weight:700;max-width:16em}
+.hero p{margin-top:.875rem;color:var(--ink-2);font-size:1.0625rem;max-width:40em}
+.hero .note{margin-top:.5rem;font-size:.8125rem;color:var(--ink-3);font-family:var(--mono)}
+
+.seg{position:relative;display:inline-flex;background:var(--bg-sunken);border-radius:var(--r-md);padding:3px;margin:1.5rem 0 1rem;user-select:none}
+.seg button{-webkit-tap-highlight-color:transparent;position:relative;z-index:1;font:inherit;font-size:.8125rem;font-weight:600;color:var(--ink-2);background:none;border:none;cursor:pointer;padding:.5rem 1rem;border-radius:8px;transition:color var(--t-small) var(--ease-out)}
+.seg button[aria-pressed="true"]{color:var(--ink)}
+.seg button:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.seg-thumb{position:absolute;top:3px;left:3px;height:calc(100% - 6px);z-index:0;background:var(--bg);border-radius:8px;box-shadow:0 1px 2px rgba(23,26,24,.08);transition:transform var(--t-med) var(--ease-in-out),width var(--t-med) var(--ease-in-out)}
+
+.tools{display:flex;flex-direction:column;gap:.5rem}
+.tool{display:grid;grid-template-columns:auto 1fr 9.5rem 6rem;gap:.75rem;align-items:center;background:var(--bg-raised);border-radius:var(--r-md);padding:.75rem 1rem;transition:background var(--t-small) var(--ease-out)}
+.tool.on{background:var(--accent-soft)}
+@media(max-width:38rem){.tool{grid-template-columns:auto 1fr;grid-template-rows:auto auto}.tool select,.tool .price{grid-column:2}}
+.tool input[type=checkbox]{width:1.2rem;height:1.2rem;accent-color:var(--accent);cursor:pointer}
+.tool .name{font-weight:600;font-size:.9375rem}
+.tool select{font:inherit;font-size:.875rem;color:var(--ink);background:var(--bg);border:1px solid var(--hairline);border-radius:8px;padding:.4rem .5rem;width:100%}
+.tool select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.price{position:relative;font-family:var(--mono)}
+.price input{font:inherit;font-size:.875rem;color:var(--ink);background:var(--bg);border:1px solid var(--hairline);border-radius:8px;padding:.4rem .5rem .4rem 1.4rem;width:100%}
+.price input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.price::before{content:"$";position:absolute;left:.55rem;top:50%;transform:translateY(-50%);color:var(--ink-3);font-size:.8125rem}
+.add-custom{margin-top:.75rem}
+
+.btn{-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font:inherit;font-size:.875rem;font-weight:600;padding:.625rem 1.125rem;border-radius:var(--r-md);border:none;cursor:pointer;text-decoration:none;transition:transform var(--t-press) var(--ease-out),background var(--t-small) var(--ease-out)}
+.btn:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.btn:active{transform:scale(.97)}
+.btn-ghost{background:transparent;color:var(--ink-2)}
+.btn-ghost:hover{background:var(--bg-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover{background:var(--accent-hover)}
+
+.result{position:sticky;bottom:1rem;background:var(--ink);color:#eef2ef;border-radius:var(--r-lg);padding:1.375rem 1.75rem;box-shadow:var(--shadow-2);margin:1.5rem 0;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.result .big{font-size:2.25rem;font-weight:750;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums;font-family:var(--mono)}
+.result .lbl{font-size:.75rem;color:#9aa79f;margin-top:.25rem}
+.result .fun{font-size:.8125rem;color:#b7c2bb;max-width:18em}
+.result .btn{background:var(--accent);color:var(--accent-ink)}
+
+.foot-note{font-size:.8125rem;color:var(--ink-3);margin:1.5rem 0}
+.more{margin:2rem 0;font-size:.9375rem;color:var(--ink-2)}
+.more a{color:var(--accent-hover);text-decoration:none;font-weight:600}
+footer{padding:2rem 0 3rem;color:var(--ink-3);font-size:.8125rem}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+footer a{color:var(--ink-2);text-decoration:none}
+.toast{position:fixed;bottom:1.5rem;left:50%;z-index:50;transform:translate(-50%,12px) scale(.97);opacity:0;pointer-events:none;background:var(--accent);color:var(--accent-ink);font-size:.8125rem;font-weight:550;padding:.75rem 1.5rem;border-radius:var(--r-full);box-shadow:var(--shadow-2);transition:transform var(--t-med) var(--ease-out),opacity var(--t-med) var(--ease-out)}
+.toast.show{transform:translate(-50%,0) scale(1);opacity:1}
+@media(prefers-reduced-motion:reduce){*{transition-duration:1ms!important}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="logo" href="../"><span></span>Doruk's Lab</a>
+  <a class="btn btn-ghost" href="../">More tools</a>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>What does your AI stack actually cost?</h1>
+    <p>Tick what you pay for. Prices are prefilled with August 2026 list prices — and fully editable, because you know your bill better than any list.</p>
+    <div class="note">// no signup · no tracking · data never leaves this page</div>
+  </section>
+
+  <div class="seg" id="seg" role="group" aria-label="Billing period">
+    <div class="seg-thumb" id="segThumb"></div>
+    <button aria-pressed="true" data-p="mo">per month</button>
+    <button aria-pressed="false" data-p="yr">per year</button>
+  </div>
+
+  <div class="tools" id="tools"></div>
+  <button class="btn btn-ghost add-custom" id="addCustom">+ Add something else</button>
+
+  <div class="result" id="res">
+    <div>
+      <div class="big" id="total">$0</div>
+      <div class="lbl" id="totalLbl">per month</div>
+    </div>
+    <div class="fun" id="fun"></div>
+    <button class="btn" id="share">Copy my stack</button>
+  </div>
+
+  <p class="foot-note">List prices as of August 2026, individual plans. Team/enterprise seats, API overages and annual discounts vary — edit any price to match your real bill.</p>
+
+  <div class="more">From the same lab: <a href="../final-grade-calculator/">Final Grade Calculator</a> · <a href="../gpa-calculator/">GPA Calculator</a> · <a href="../attendance-calculator/">Attendance Calculator</a></div>
+</main>
+
+<footer><div class="wrap">
+  <span>Made by <a href="../">Doruk's Lab</a> — small tools, shipped fast.</span>
+  <span>Spotted a stale price? It's editable ↑</span>
+</div></footer>
+
+<div class="toast" id="toast" role="status">Copied — go start the budget conversation.</div>
+
+<script>
+const TOOLS=[
+  {name:"GitHub Copilot",tiers:{"Pro":10,"Pro+":39,"Max":100,"Business seat":19}},
+  {name:"Cursor",tiers:{"Pro":20,"Pro+":60,"Ultra":200,"Teams seat":40}},
+  {name:"Claude",tiers:{"Pro":20,"Max 5x":100,"Max 20x":200}},
+  {name:"ChatGPT / Codex",tiers:{"Plus":20,"Pro":200}},
+  {name:"Windsurf",tiers:{"Pro":20,"Max":200,"Teams seat":40}},
+  {name:"Devin",tiers:{"Core":20,"Team":500}},
+  {name:"Replit",tiers:{"Core":20,"Pro":100}},
+  {name:"Augment Code",tiers:{"Individual":20,"Team":60,"Max":200}},
+  {name:"Tabnine",tiers:{"Individual":39,"Team seat":59}},
+  {name:"Amazon Q Developer",tiers:{"Pro":19}},
+  {name:"API tokens (monthly avg)",tiers:{"Light ~$10":10,"Steady ~$50":50,"Heavy ~$200":200}},
+];
+const toolsEl=document.getElementById('tools');
+let period='mo';
+function row(t,checked=false){
+  const d=document.createElement('div');d.className='tool';
+  const opts=Object.entries(t.tiers).map(([k,v],i)=>`<option value="${v}" ${i===0?'selected':''}>${k}</option>`).join('');
+  d.innerHTML=`<input type="checkbox" ${checked?'checked':''} aria-label="Include ${t.name}">
+    <span class="name">${t.name}</span>
+    <select aria-label="${t.name} plan">${opts}</select>
+    <span class="price"><input type="number" inputmode="decimal" min="0" step="1" value="${Object.values(t.tiers)[0]}" aria-label="${t.name} price"></span>`;
+  const cb=d.querySelector('input[type=checkbox]'),sel=d.querySelector('select'),pr=d.querySelector('.price input');
+  cb.addEventListener('change',()=>{d.classList.toggle('on',cb.checked);calc()});
+  sel.addEventListener('change',()=>{pr.value=sel.value;if(!cb.checked){cb.checked=true;d.classList.add('on')}calc()});
+  pr.addEventListener('input',()=>{if(!cb.checked){cb.checked=true;d.classList.add('on')}calc()});
+  toolsEl.appendChild(d);
+}
+TOOLS.forEach(t=>row(t));
+document.getElementById('addCustom').addEventListener('click',()=>{
+  const name=prompt("Name it (e.g. Midjourney, v0, Perplexity):");
+  if(!name)return;
+  row({name:name.slice(0,30),tiers:{"Custom":20}},true);
+  calc();
+});
+
+/* Period toggle */
+const seg=document.getElementById('seg'),thumb=document.getElementById('segThumb');
+const segBtns=[...seg.querySelectorAll('button')];
+function setP(btn){
+  thumb.style.width=btn.offsetWidth+'px';
+  thumb.style.transform=`translateX(${btn.offsetLeft-3}px)`;
+  segBtns.forEach(b=>b.setAttribute('aria-pressed',b===btn));
+  period=btn.dataset.p;calc();
+}
+segBtns.forEach(b=>b.addEventListener('pointerdown',()=>setP(b)));
+requestAnimationFrame(()=>setP(segBtns[0]));
+
+const totalEl=document.getElementById('total'),lbl=document.getElementById('totalLbl'),fun=document.getElementById('fun');
+let currentTotal=0,raf;
+function calc(){
+  let mo=0;const picked=[];
+  toolsEl.querySelectorAll('.tool').forEach(d=>{
+    const cb=d.querySelector('input[type=checkbox]');
+    if(cb.checked){
+      const v=parseFloat(d.querySelector('.price input').value)||0;
+      mo+=v;picked.push(d.querySelector('.name').textContent+' $'+v);
+    }
+  });
+  const target=period==='mo'?mo:mo*12;
+  lbl.textContent=period==='mo'?'per month':'per year';
+  const from=currentTotal,delta=target-from,t0=performance.now();
+  cancelAnimationFrame(raf);
+  (function tick(t){
+    const p=Math.min((t-t0)/280,1),e=1-Math.pow(1-p,3);
+    currentTotal=from+delta*e;
+    totalEl.textContent='$'+Math.round(currentTotal).toLocaleString('en-US');
+    if(p<1)raf=requestAnimationFrame(tick);
+  })(t0);
+  const yr=mo*12;
+  fun.textContent=mo<=0?'':yr>=3500?`That's a used car every year. Or ${Math.round(yr/1199)} MacBook Air${yr>=2398?'s':''}.`
+    :yr>=1200?`That's ${Math.round(yr/1199)>=1?'a MacBook Air':''} every ${Math.max(1,Math.round(1199/mo))} months of this.`
+    :yr>=240?`≈ ${Math.round(mo/5)} specialty coffees a month. You'd drink those anyway.`
+    :'Cheaper than most gym memberships you don\'t use.';
+  window._stack=picked;
+}
+document.getElementById('share').addEventListener('click',()=>{
+  const mo=Math.round(period==='mo'?currentTotal:currentTotal/12);
+  const txt=`My AI stack: $${mo}/mo (${(window._stack||[]).length} tools)\n${(window._stack||[]).join(' · ')}\nAdd yours up: ${location.origin}${location.pathname}`;
+  navigator.clipboard.writeText(txt).then(()=>{const x=document.getElementById('toast');x.classList.add('show');clearTimeout(x._t);x._t=setTimeout(()=>x.classList.remove('show'),2200)});
+});
+calc();
+</script>
+</body>
+</html>
