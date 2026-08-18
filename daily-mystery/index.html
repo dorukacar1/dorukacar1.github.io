@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minute Mystery — A Tiny Daily Whodunnit</title>
+<meta name="description" content="One tiny murder mystery a day. Read the statements, spot the lie, name the culprit. New case at midnight.">
+<style>
+:root{
+  --bg:#151310; --bg-raised:#1f1c17; --bg-sunken:#2a2620;
+  --ink:#ece5d8; --ink-2:#b3a992; --ink-3:#7d745f;
+  --accent:#d9962e; --accent-hover:#c28325; --accent-soft:#3a2f1c; --accent-ink:#1a1508;
+  --good:#7dc98f; --warn:#e0705c;
+  --hairline:rgba(236,229,216,.12);
+  --focus-ring:0 0 0 2px var(--bg),0 0 0 4px var(--accent);
+  --shadow-2:0 2px 4px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.4);
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --serif:Georgia,"Times New Roman",serif;
+  --ease-out:cubic-bezier(0.23,1,0.32,1); --t-press:120ms; --t-small:180ms; --t-med:240ms;
+  --r-md:12px; --r-lg:18px; --r-full:999px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font:100%/1.6 var(--font);-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--ink);min-height:100vh}
+::selection{background:var(--accent-soft);color:var(--accent)}
+.wrap{max-width:40rem;margin:0 auto;padding:0 1.25rem}
+header{padding:1rem 0}
+header .wrap{display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:700;font-size:.9375rem;color:var(--ink);text-decoration:none;display:flex;gap:.5rem;align-items:center}
+.logo span{width:9px;height:9px;border-radius:var(--r-full);background:var(--accent)}
+.logo a{color:var(--ink-2);text-decoration:none;font-size:.875rem;font-weight:600}
+
+.hero{padding:1.75rem 0 .75rem;text-align:center}
+.kicker{font-size:.75rem;font-weight:700;color:var(--accent);letter-spacing:.14em;text-transform:uppercase}
+h1{font-size:clamp(1.6rem,5vw,2.2rem);letter-spacing:-0.02em;font-weight:750;margin-top:.375rem}
+.caseno{color:var(--ink-3);font-size:.8125rem;margin-top:.375rem;font-variant-numeric:tabular-nums}
+
+.story{background:var(--bg-raised);border-radius:var(--r-lg);padding:1.625rem;margin:1.25rem 0;font-family:var(--serif);font-size:1.0313rem;line-height:1.7;color:#ddd5c4}
+.story .setting{margin-bottom:1rem}
+.story .q{color:var(--accent);font-weight:700;font-family:var(--font);font-size:.9375rem;letter-spacing:.02em}
+
+.suspects{display:flex;flex-direction:column;gap:.625rem;margin:1rem 0 1.5rem}
+.sus{-webkit-tap-highlight-color:transparent;text-align:left;font:inherit;background:var(--bg-raised);border:1px solid var(--hairline);border-radius:var(--r-md);padding:1rem 1.125rem;color:var(--ink);cursor:pointer;transition:border-color var(--t-small) var(--ease-out),transform var(--t-press) var(--ease-out),background var(--t-small) var(--ease-out)}
+.sus:hover{border-color:var(--accent)}
+.sus:active{transform:scale(.985)}
+.sus:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.sus .who{font-weight:700;font-size:.9375rem}
+.sus .say{font-family:var(--serif);font-size:.9375rem;color:var(--ink-2);margin-top:.25rem;font-style:italic}
+.sus.correct{background:#1d2b20;border-color:var(--good)}
+.sus.wrong{background:#2e1b17;border-color:var(--warn);opacity:.75}
+.sus[disabled]{cursor:default}
+
+.verdict{background:var(--bg-raised);border-radius:var(--r-lg);padding:1.5rem;box-shadow:var(--shadow-2);display:none;margin-bottom:1.5rem}
+.verdict.show{display:block}
+.verdict .v-title{font-weight:750;font-size:1.125rem;letter-spacing:-0.01em}
+.verdict.win .v-title{color:var(--good)} .verdict.lose .v-title{color:var(--warn)}
+.verdict .v-why{font-family:var(--serif);color:var(--ink-2);margin-top:.5rem;font-size:.9688rem;line-height:1.65}
+.verdict .stats{margin-top:1rem;font-size:.8125rem;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.btn{-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font:inherit;font-size:.9375rem;font-weight:650;padding:.75rem 1.5rem;border-radius:var(--r-md);border:none;cursor:pointer;text-decoration:none;transition:transform var(--t-press) var(--ease-out),background var(--t-small) var(--ease-out);background:var(--accent);color:var(--accent-ink);margin-top:1rem}
+.btn:hover{background:var(--accent-hover)}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+
+.tomorrow{text-align:center;color:var(--ink-3);font-size:.8125rem;margin:1.5rem 0 2.5rem}
+footer{padding:1rem 0 3rem;color:var(--ink-3);font-size:.8125rem}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+footer a{color:var(--ink-2);text-decoration:none}
+.toast{position:fixed;bottom:1.5rem;left:50%;z-index:50;transform:translate(-50%,12px) scale(.97);opacity:0;pointer-events:none;background:var(--accent);color:var(--accent-ink);font-size:.8125rem;font-weight:600;padding:.75rem 1.5rem;border-radius:var(--r-full);box-shadow:var(--shadow-2);transition:transform var(--t-med) var(--ease-out),opacity var(--t-med) var(--ease-out)}
+.toast.show{transform:translate(-50%,0) scale(1);opacity:1}
+@media(prefers-reduced-motion:reduce){*{transition-duration:1ms!important}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <span class="logo"><span></span>Minute Mystery</span>
+  <a href="../" style="color:var(--ink-2);text-decoration:none;font-size:.875rem;font-weight:600">Doruk's Lab →</a>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="kicker">One tiny whodunnit a day</div>
+    <h1 id="title">—</h1>
+    <div class="caseno" id="caseno"></div>
+  </section>
+
+  <div class="story">
+    <p class="setting" id="setting"></p>
+    <p class="q">WHO IS LYING? Tap the suspect whose statement doesn't hold up.</p>
+  </div>
+
+  <div class="suspects" id="suspects"></div>
+
+  <div class="verdict" id="verdict">
+    <div class="v-title" id="vTitle"></div>
+    <p class="v-why" id="vWhy"></p>
+    <div class="stats" id="vStats"></div>
+    <button class="btn" id="share">Share (no spoilers)</button>
+  </div>
+
+  <p class="tomorrow">A new case unlocks at midnight, your time. Current streak: <strong id="streak">0</strong> 🔥</p>
+</main>
+
+<footer><div class="wrap">
+  <span>Made by <a href="../">Doruk's Lab</a> — small tools, shipped fast.</span>
+  <span>No accounts · progress saved on your device</span>
+</div></footer>
+
+<div class="toast" id="toast" role="status">Copied — recruit a rival detective.</div>
+
+<script>
+const CASES=[
+{t:"The Locked Greenhouse",s:"Professor Alba was found unconscious in her locked greenhouse at 7am, her prize orchid stolen. The glass door locks from the inside; the only key never left her pocket. It rained hard all night until dawn.",sus:[
+{w:"Marta, the gardener",say:"I arrived at 6:30, saw the door shut, and went straight to the toolshed. My boots are still soaked from crossing the lawn.",lie:false},
+{w:"Dr. Pell, her rival",say:"I was home all night. I only came when Marta phoned me at 7 — I rushed over so fast I crossed the lawn and my shoes stayed perfectly dry.",lie:true},
+{w:"Sam, her student",say:"I slept in the lab annex. I heard glass rattle around 5 but thought it was the storm.",lie:false}],
+why:"The lawn was drenched after a night of rain. Nobody crosses it at 7am with perfectly dry shoes — unless they actually came hours earlier… or never came from outside at all."},
+{t:"The Midnight Manuscript",s:"Novelist Renata's only manuscript burned in her fireplace at midnight. The power had been cut at 11pm, plunging the house into total darkness. Three guests were staying over.",sus:[
+{w:"Theo, the editor",say:"I was reading in my room until the lights went out, then I just went to sleep.",lie:false},
+{w:"Iris, the biographer",say:"After the blackout I sat in the pitch-dark hallway. At midnight sharp I checked my antique wind-up watch and saw it was exactly twelve.",lie:true},
+{w:"Gus, the neighbor",say:"I came over with candles around half past twelve when I saw the smoke from my kitchen window.",lie:false}],
+why:"In a pitch-dark hallway you can't read an antique watch — it has no light. Iris could only have 'seen midnight sharp' if she had a light source she claims she didn't have."},
+{t:"The Regatta Ruse",s:"During the yacht club regatta, the trophy vanished from the clubhouse between 2:00 and 2:20pm. The tide was out all afternoon, leaving the harbor mud flats exposed until sunset.",sus:[
+{w:"Captain Voss",say:"I sailed my dinghy right up to the clubhouse dock at 2:10 and moored there for ten minutes.",lie:true},
+{w:"Lena, the barmaid",say:"I was polishing glasses at the bar. I saw people walk the mud path with filthy boots all afternoon.",lie:false},
+{w:"Old Pemberton",say:"I dozed on the veranda. The scraping of boots being cleaned woke me twice.",lie:false}],
+why:"The tide was out — the harbor was mud flats until sunset. Nobody sails a dinghy up to the dock at 2:10 when there's no water under it."},
+{t:"The Conservatory Concert",s:"Mid-concert, the soloist's priceless bow was swapped for a fake during the 15-minute interval. The green room has one door, watched by the stage manager, who saw only three people enter.",sus:[
+{w:"Nina, the pianist",say:"I went in to fetch my sheet music. I was there thirty seconds, both hands full of scores when I left.",lie:false},
+{w:"Maestro Karl",say:"I stepped in to congratulate her. I shook her hand — she has a wonderfully firm grip — and left.",lie:true},
+{w:"Fedor, the luthier",say:"I examined the bow case's lock at her request and left it locked as I found it.",lie:false}],
+why:"The soloist wasn't in the green room during the interval — she was taking her bows on stage, then greeting patrons. Karl couldn't have shaken her hand in there; he invented the encounter to explain his visit."},
+{t:"The Frozen Ledger",s:"The accountant's incriminating ledger vanished from the mountain lodge study overnight. Outside, fresh snow fell steadily from dusk until dawn. In the morning a single set of boot prints led from the gate to the door.",sus:[
+{w:"Bruno, the caretaker",say:"I walked up from the gate at dawn, just after the snow stopped. Those prints are mine.",lie:false},
+{w:"Ms. Hale, the partner",say:"I drove up at midnight, walked to the door, took nothing, walked back and drove home. Check the road if you like.",lie:true},
+{w:"The cook, Anj",say:"I never left the lodge. I was baking bread from five o'clock — ask anyone about the smell.",lie:false}],
+why:"Snow fell until dawn. A midnight walk to the door would have been covered by hours of snowfall — yet only ONE fresh set of prints exists, from after the snow stopped. Ms. Hale's 'midnight visit' should have left buried tracks; instead she came later than she admits — or the prints story falls apart."},
+{t:"The Gallery Glitch",s:"A small bronze vanished from the gallery between 9:00 and 9:04pm — the exact window when a power surge knocked out the cameras. The surge came from the fuse box in the locked basement.",sus:[
+{w:"Dee, the electrician",say:"I was upstairs rewiring the café all evening. First I heard of the surge was the guard shouting.",lie:false},
+{w:"Marco, the night guard",say:"I did my usual round: lobby at 8:55, east wing at 9:05. The corridor clocks confirmed my times exactly.",lie:true},
+{w:"Vivi, the curator",say:"I left at 8:40 — the doorman logged me out. I came back when Marco called me at 9:30.",lie:false}],
+why:"The corridor clocks are electric. During a four-minute outage they stopped — every clock in the building read the wrong time afterward. Marco's times can't have been 'confirmed exactly' by clocks that were frozen; he needed that alibi story prepared in advance."},
+{t:"The Orchard Alibi",s:"Someone emptied the farm safe on Sunday afternoon. The safe sits in the main house; the family was supposedly out at the annual cider fair all day.",sus:[
+{w:"Uncle Ray",say:"I manned our cider stall from noon to six. Hundreds of people saw me pouring.",lie:false},
+{w:"Cousin Beth",say:"I spent the whole afternoon picking apples in the far orchard for the evening batch.",lie:true},
+{w:"Grandpa Joe",say:"I napped in the truck at the fairground. The parking attendant kept checking on me.",lie:false}],
+why:"It's the cider fair — the harvest is long done. In August the far orchard's apples were already picked for the fair itself; there was nothing to pick 'all afternoon'. Beth's chore doesn't exist on that day."},
+{t:"The Overnight Train",s:"A diamond clip disappeared from compartment 4 while the night train crossed the border. The corridor attendant swears no one passed her seat after 11pm. The train's windows don't open; it made zero stops until 6am.",sus:[
+{w:"The violinist in comp. 3",say:"I practiced with a mute until midnight, then slept. My door squeaks terribly — the attendant would have heard it.",lie:false},
+{w:"The salesman in comp. 5",say:"I never left my compartment. At 2am I bought coffee from the dining car steward and read till dawn.",lie:true},
+{w:"The student in comp. 6",say:"I slept badly — the border officers' torches woke me around 4 when they walked the corridor.",lie:false}],
+why:"He 'never left his compartment' yet bought coffee from the dining car at 2am? On a night train the dining car closes and the steward doesn't roam selling coffee at 2 — and either way, one of those two statements kills the other."},
+{t:"The Rooftop Reception",s:"At the rooftop wedding reception, the gift box of cash vanished sometime after the fireworks began at 10pm. The only stairwell was manned by a waiter; the elevator was out of order all evening.",sus:[
+{w:"The best man",say:"I was giving my toast when the fireworks started — there's a video of the whole thing.",lie:false},
+{w:"The photographer",say:"I was shooting the fireworks from the roof edge, back to the crowd, for the entire display.",lie:false},
+{w:"The wedding planner",say:"I ran down by elevator at 10:05 to fetch more champagne and came right back up.",lie:true}],
+why:"The elevator was out of order all evening. The planner's five-minute champagne run is impossible as described — and the stairwell waiter never saw her pass."},
+{t:"The Chess Club Cipher",s:"The club's antique chess set was taken during Thursday's blitz tournament, sometime during round three. Every player's moves were being recorded live on the broadcast boards.",sus:[
+{w:"Grandmaster Osei",say:"I was playing board one in round three. My game lasted the full twenty minutes — every move is timestamped online.",lie:false},
+{w:"Petra, the club treasurer",say:"I watched round three from the balcony, then went to update the pairings.",lie:false},
+{w:"Viktor, eliminated in round two",say:"After my loss I stayed glued to board one like everyone else — I never left the hall until the lights came up.",lie:true}],
+why:"Blitz games last minutes, not twenty — but that's Osei's timestamped record, verifiable. The real slip: Viktor says 'until the lights came up' — but blitz tournaments don't dim the hall lights; that happens at exhibition matches. He wasn't in the hall; he described the wrong event."},
+{t:"The Baker's Dozen",s:"The bakery's secret recipe book vanished before dawn. The dough proofing log shows the ovens were fired at 4:00am sharp. Flour dust covered the entire back room floor — undisturbed except for one clean path swept to the safe.",sus:[
+{w:"Tomas, the apprentice",say:"I arrived at 3:45, fired the ovens at 4 as always, and never left the front room after that.",lie:false},
+{w:"Delia, the pastry chef",say:"I came at 5 for the croissants. The back room floor was already swept clean when I passed it — spotless, corner to corner.",lie:true},
+{w:"Mr. Crumb, the owner",say:"I sleep upstairs. I heard the ovens roar at 4 and the front bell at 5, nothing else.",lie:false}],
+why:"The floor wasn't spotless corner to corner — it was covered in flour dust with ONE swept path. Delia describes a scene that never existed; she's covering for what she did see, or did."},
+{t:"The Lighthouse Log",s:"The keeper's gold pocketwatch disappeared during the storm blackout, between 9 and 10pm. The lighthouse lamp itself never went out — it runs on its own backup generator.",sus:[
+{w:"The assistant keeper",say:"I hand-cranked the fog siren every five minutes through the blackout. My arms still ache.",lie:false},
+{w:"The stranded fisherman",say:"I huddled by the window all hour, watching the beam sweep the bay every ten seconds like clockwork.",lie:false},
+{w:"The radio operator",say:"I was upstairs sending distress relays the whole hour. The lamp room was pitch black when I passed it — I had to feel my way.",lie:true}],
+why:"The lamp never went out — it has its own generator, and the fisherman watched the beam all hour. The lamp room is the one room that was NOT pitch black. The operator never went upstairs; he was somewhere else entirely."},
+{t:"The Auction Preview",s:"At the estate auction preview, a miniature portrait vanished from its case between 3:10 and 3:25pm. The case's glass lid weighs enough that it takes both hands to hold open.",sus:[
+{w:"The dealer, Mr. Fitch",say:"I examined the tapestries across the room. My gloves never came off — house rules.",lie:false},
+{w:"Lady Wren",say:"I stood at that very case at 3:15, held the lid open with one hand and photographed the portrait with my phone in the other.",lie:true},
+{w:"The porter",say:"I carried chairs to the lawn from 3:00 to 3:30. The French doors were propped open the whole time.",lie:false}],
+why:"The lid takes both hands to hold open. Lady Wren's one-hand-lid, one-hand-phone pose is physically impossible — either someone held it for her, or the lid was already off."},
+{t:"The Icehouse Inventory",s:"A crate of vintage champagne vanished from the icehouse overnight. The icehouse door had been frozen shut by a burst pipe since Tuesday — it took two men with crowbars to open it Thursday morning, fresh ice cracking as it gave.",sus:[
+{w:"The estate manager",say:"I did Wednesday's inventory as scheduled — slipped in through the door, counted the crates, all present at noon.",lie:true},
+{w:"The gardener",say:"I reported the burst pipe Tuesday evening. Nobody could get in after that — I tried myself and the door wouldn't budge.",lie:false},
+{w:"The chauffeur",say:"I was away in town both days. The garage ledger has my mileage.",lie:false}],
+why:"The door was frozen shut from Tuesday until it was crowbarred open Thursday — fresh ice cracked as it opened, so it hadn't been opened in between. The manager's 'Wednesday inventory' through that door never happened."},
+{t:"The Library Late Shift",s:"The rare first edition disappeared from the reading room between 8 and 9pm. At 8:15 the fire alarm was tested — a deafening two-minute bell that everyone in the building had been emailed about.",sus:[
+{w:"The night librarian",say:"I shelved returns in the annex. When the alarm rang I jumped so hard I dropped a whole armful of books — nobody warned us!",lie:true},
+{w:"The PhD student",say:"I had headphones on at my desk. Even through them the bell was brutal.",lie:false},
+{w:"The janitor",say:"I mopped the east stairwell. I'd read the email so I just kept mopping through the noise.",lie:false}],
+why:"Every person in the building was emailed about the 8:15 test. The librarian — staff, of all people — claims nobody warned them. The fake surprise is a performance: she needed a reason to be 'startled' away from her post."},
+];
+/* ---- Daily selection ---- */
+const $=id=>document.getElementById(id);
+const epoch=new Date(2026,7,18); // Aug 18 2026 = case 1
+const today=new Date(); today.setHours(0,0,0,0);
+const dayN=Math.max(0,Math.round((today-epoch)/86400000));
+const idx=dayN%CASES.length;
+const C=CASES[idx];
+const KEY='mm-'+today.toISOString().slice(0,10);
+
+$('title').textContent=C.t;
+$('caseno').textContent='Case #'+(dayN+1)+' · '+today.toLocaleDateString('en-GB',{day:'numeric',month:'long'});
+$('setting').textContent=C.s;
+
+/* streak */
+let meta={};try{meta=JSON.parse(localStorage.getItem('mm-meta')||'{}')}catch(e){}
+$('streak').textContent=meta.streak||0;
+
+const box=$('suspects');let guesses=0,done=false;
+const order=[...C.sus]; /* keep authored order (lie position varies by case) */
+order.forEach((s,i)=>{
+  const b=document.createElement('button');b.className='sus';
+  b.innerHTML=`<div class="who">${s.w}</div><div class="say">“${s.say}”</div>`;
+  b.addEventListener('click',()=>{
+    if(done)return;guesses++;
+    if(s.lie){
+      done=true;b.classList.add('correct');
+      box.querySelectorAll('.sus').forEach(x=>x.disabled=true);
+      showVerdict(true);
+    }else{
+      b.classList.add('wrong');b.disabled=true;
+      if(guesses>=2){done=true;
+        box.querySelectorAll('.sus').forEach((x,j)=>{if(order[j].lie)x.classList.add('correct');x.disabled=true});
+        showVerdict(false);
+      }
+    }
+  });
+  box.appendChild(b);
+});
+
+/* restore if already played */
+try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');
+if(saved){done=true;guesses=saved.g;
+  box.querySelectorAll('.sus').forEach((x,j)=>{if(order[j].lie)x.classList.add('correct');x.disabled=true});
+  showVerdict(saved.won,true);
+}}catch(e){}
+
+function showVerdict(won,restored){
+  const v=$('verdict');v.classList.add('show');v.classList.add(won?'win':'lose');
+  $('vTitle').textContent=won?(guesses===1?'Case closed — first try. 🕵️':'Case closed.'):'The culprit walked free.';
+  $('vWhy').textContent=C.why;
+  if(!restored){
+    try{localStorage.setItem(KEY,JSON.stringify({won,g:guesses}));
+    const y=new Date(today);y.setDate(y.getDate()-1);
+    meta.streak=(meta.last===y.toISOString().slice(0,10)&&won)?(meta.streak||0)+1:(won?1:0);
+    meta.last=today.toISOString().slice(0,10);
+    localStorage.setItem('mm-meta',JSON.stringify(meta));}catch(e){}
+  }
+  $('streak').textContent=meta.streak||0;
+  $('vStats').textContent=`Solved in ${guesses} ${guesses===1?'guess':'guesses'} · streak ${meta.streak||0}`;
+}
+$('share').addEventListener('click',()=>{
+  const r=done?($('verdict').classList.contains('win')?(guesses===1?'🟩':'🟨🟩'):'🟥🟥'):'…';
+  const txt=`Minute Mystery #${dayN+1} ${r}\nOne tiny whodunnit a day — can you spot the lie?\n${location.origin}${location.pathname}`;
+  navigator.clipboard.writeText(txt).then(()=>{const t=$('toast');t.classList.add('show');clearTimeout(t._x);t._x=setTimeout(()=>t.classList.remove('show'),2200)});
+});
+</script>
+</body>
+</html>
