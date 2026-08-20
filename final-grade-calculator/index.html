@@ -142,6 +142,19 @@ footer a:hover{color:var(--ink)}
     </div>
   </div>
 
+  <section style="margin:3rem 0 0">
+    <h2 style="font-size:1.375rem;letter-spacing:-0.015em">How the final grade formula works</h2>
+    <p class="muted" style="margin-top:.625rem;font-size:.9375rem;line-height:1.7">Your course grade is a weighted average. If your current grade is <strong>C</strong>, the final exam is worth <strong>W</strong> percent of the course, and you want to finish with <strong>G</strong>, the score you need on the final is:</p>
+    <p style="margin:.875rem 0;background:var(--bg-raised);border-radius:var(--r-md);padding:.875rem 1rem;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.9375rem">needed = (G − C × (1 − W/100)) ÷ (W/100)</p>
+    <p class="muted" style="font-size:.9375rem;line-height:1.7">Example: you're sitting at 78%, you want an 85%, and the final is worth 40%. That's (85 − 78 × 0.6) ÷ 0.4 = <strong>95.5%</strong> — which is exactly what the calculator shows.</p>
+    <h2 style="font-size:1.375rem;letter-spacing:-0.015em;margin-top:2rem">Common questions</h2>
+    <div style="margin-top:.875rem;display:flex;flex-direction:column;gap:.5rem">
+      <details style="background:var(--bg-raised);border-radius:var(--r-md);padding:1rem 1.25rem"><summary style="font-weight:600;font-size:.9375rem;cursor:pointer">What if the answer is over 100%?</summary><p class="muted" style="margin-top:.5rem;font-size:.875rem">Your target isn't reachable through the final alone. Ask about extra credit, or reset the target to your maximum possible grade — the calculator tells you that number too.</p></details>
+      <details style="background:var(--bg-raised);border-radius:var(--r-md);padding:1rem 1.25rem"><summary style="font-weight:600;font-size:.9375rem;cursor:pointer">My final replaces my lowest test score. Does this still work?</summary><p class="muted" style="margin-top:.5rem;font-size:.875rem">Replacement policies change the math. Use the "My current average" tab: enter each component with its weight, try the final score in both places, and compare.</p></details>
+      <details style="background:var(--bg-raised);border-radius:var(--r-md);padding:1rem 1.25rem"><summary style="font-weight:600;font-size:.9375rem;cursor:pointer">Does this work for letter grades?</summary><p class="muted" style="margin-top:.5rem;font-size:.875rem">Convert letters to your school's percentage midpoints first (e.g. B+ ≈ 87–89). For GPA math, use our <a href="../gpa-calculator/" style="color:var(--accent-hover)">GPA Calculator</a>.</p></details>
+    </div>
+  </section>
+
   <section class="upsell">
     <h2>Finals are won in the 3 weeks before them.</h2>
     <p>This calculator tells you the score you need — the <strong>Student Survival Kit '26–'27</strong> gets you there: an exam countdown board, a weekly study planner, a grade tracker for every course, and 5 printable planners. One file, works offline, yours forever.</p>
