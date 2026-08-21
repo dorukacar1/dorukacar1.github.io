@@ -86,6 +86,17 @@ footer a{color:var(--ink-2);text-decoration:none}
     <div class="msg" id="msg"></div>
   </div>
 
+  <section style="margin:3rem 0 0">
+    <h2 style="font-size:1.375rem;letter-spacing:-0.022em;font-weight:700">How the skip math works</h2>
+    <p style="margin-top:.625rem;font-size:.9375rem;color:var(--ink-2);line-height:1.7">Your attendance percentage is simply <strong>attended ÷ held × 100</strong>. The interesting question is the future: if you're above the requirement <strong>R</strong>, the number of classes you can still skip in a row is:</p>
+    <p style="margin:.875rem 0;background:var(--bg-raised);border-radius:var(--r-md);padding:.875rem 1rem;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.9375rem">can_skip = ⌊(attended × 100 ÷ R) − held⌋</p>
+    <p style="font-size:.9375rem;color:var(--ink-2);line-height:1.7">And if you've fallen below the line, the classes you must attend back-to-back to recover is <span style="font-family:ui-monospace,Menlo,Consolas,monospace">⌈(R × held − 100 × attended) ÷ (100 − R)⌉</span>. Notice the asymmetry: falling below the line is fast, climbing back is slow — every skipped class costs several attended ones to undo. That's the real lesson of a 75% rule.</p>
+    <div style="margin-top:1.25rem;display:flex;flex-direction:column;gap:.5rem">
+      <details style="background:var(--bg-raised);border-radius:var(--r-md);padding:1rem 1.25rem"><summary style="font-weight:600;font-size:.9375rem;cursor:pointer">Why 75%? Is that universal?</summary><p style="margin-top:.5rem;font-size:.875rem;color:var(--ink-2)">75% is the most common requirement (many universities in India, Turkey and Europe use it), but plenty of courses use 70%, 80% or "max 4 absences". The requirement field is editable — set yours.</p></details>
+      <details style="background:var(--bg-raised);border-radius:var(--r-md);padding:1rem 1.25rem"><summary style="font-weight:600;font-size:.9375rem;cursor:pointer">Do excused absences count?</summary><p style="margin-top:.5rem;font-size:.875rem;color:var(--ink-2)">Depends on your institution — some count medical absences as attended, some don't count the class as held. Enter the numbers the way your school counts them.</p></details>
+    </div>
+  </section>
+
   <div class="more">More free tools: <a href="../final-grade-calculator/">Final Grade Calculator</a> · <a href="../gpa-calculator/">GPA Calculator</a> · <a href="../semester-grade-planner/">Semester Grade Planner</a></div>
 
   <section class="upsell">
